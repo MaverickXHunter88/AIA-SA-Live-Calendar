@@ -1,0 +1,35 @@
+name: Build ICS
+
+on:
+  schedule:
+    - cron: "0 14 * * *"   # runs daily (UTC)
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Generate calendar
+        run: |
+          python generate_ics.py
+
+      - name: Commit updated ICS
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add events.ics
+          git commit -m "Update events.ics" || echo "No changes to commit"
+          git push
