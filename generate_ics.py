@@ -10,7 +10,15 @@ def clean_text(s: str) -> str:
     return re.sub(r"\s+", " ", s or "").strip()
 
 def main():
-    r = requests.get(CALENDAR_URL, timeout=30)
+    headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Connection": "keep-alive",
+}
+
+r = requests.get(CALENDAR_URL, headers=headers, timeout=30)
+
     r.raise_for_status()
 
     soup = BeautifulSoup(r.text, "html.parser")
